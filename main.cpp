@@ -1,6 +1,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <stdlib.h>
+
+int e_x, e_y, v_x, v_y, rx, ry, n_x, n_y, stado;
 float mat_ambient[] ={ 0.0f,0.1f,0.06f ,1.0f};
 float mat_diffuse[] ={ 0.0f,0.50980392f,0.50980392f,1.0f};
 float mat_specular[] ={0.50196078f,0.50196078f,0.50196078f,1.0f };
@@ -9,8 +11,8 @@ float shine[] ={32.0f};
 
 void init(void)
 {
+	glClearColor(1.0,1.0,1.0,1.0);
 // Ubicamos la fuente de luz en el punto
-    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
 //GLfloat luz_ambiental[] = { 0.2, 0.2, 0.2, 1.0 };
 
 
@@ -19,12 +21,6 @@ void init(void)
     glEnable(GL_LIGHT0);
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
-
-//glLightfv(GL_LIGHT0,GL_POSITION,light_position);
-// Queremos que se dibujen las caras frontales
-// y con un color solido de relleno.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 }
 
 void reshape(int w, int h)
@@ -35,7 +31,8 @@ void reshape(int w, int h)
 // "limpiamos" esta con la matriz identidad.
     glLoadIdentity();
 // Usamos proyeccion ortogonal
-    glOrtho(-300, 300, -300, 300, -300, 300);
+	glOrtho (-300, 300, -300*(GLfloat)h/(GLfloat)w,350*(GLfloat)h/(GLfloat)w, -300, 300);
+    
 // Activamos la matriz de modelado/visionado.
     glMatrixMode(GL_MODELVIEW);
 // "Limpiamos" la matriz
@@ -49,6 +46,9 @@ void display(void)
 // "Limpiamos" el frame buffer con el color de "Clear", en este
 // caso negro.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	    GLfloat light_position[] = { (int)((0.03076923076923076923076923076923 * (n_x + v_x)) - 10), (int)((0.03076923076923076923076923076923 * (n_y + v_y)) - 10) * -1, 1.0, 0.0 };
+
+	glLightfv(GL_LIGHT0,GL_POSITION,light_position);
 
     glMatrixMode( GL_MODELVIEW_MATRIX );
     glLoadIdentity();
@@ -73,6 +73,20 @@ void keyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
+	case 'C':
+    case 'c':
+    mat_ambient[0] = 0.19125;
+    mat_ambient[1] =0.0735;
+    mat_ambient[2] =0.0225,1.0f ;
+    mat_diffuse[0] =0.7038;
+    mat_diffuse[1] =0.27048;
+    mat_diffuse[2] =0.0828, 1.0f ;
+    mat_specular[0] =0.256777;
+    mat_specular[1] =0.137622;
+    mat_specular[2] =0.086014, 1.0f ;
+    shine[0] = 15.0f;
+	break;
+	
     case 'B':
     case 'b':
     mat_ambient[0] = 0.329412f;
@@ -99,19 +113,7 @@ void keyboard(unsigned char key, int x, int y)
     mat_specular[2] = 0.366065, 1.0f ;
     shine[0] = 20.0f;
 	break;
-    case 'C':
-    case 'c':
-    mat_ambient[0] = 0.19125;
-    mat_ambient[1] =0.0735;
-    mat_ambient[2] =0.0225,1.0f ;
-    mat_diffuse[0] =0.7038;
-    mat_diffuse[1] =0.27048;
-    mat_diffuse[2] =0.0828, 1.0f ;
-    mat_specular[0] =0.256777;
-    mat_specular[1] =0.137622;
-    mat_specular[2] =0.086014, 1.0f ;
-    shine[0] = 15.0f;
-	break;
+    
     case 'R':
     case 'r':
     mat_ambient[0] = 0.0;
@@ -125,6 +127,7 @@ void keyboard(unsigned char key, int x, int y)
     mat_specular[2] =0.6, 1.0f ;
     shine[0] = 10.0f;
 	break;
+	
     case 'S':
     case 's':
     mat_ambient[0] = 0.19225;
@@ -141,7 +144,38 @@ void keyboard(unsigned char key, int x, int y)
     }
     glutPostRedisplay();
 }
-
+void mouse(int button, int state, int x, int y)
+    {
+        int rx, ry;
+        if(button == 0)
+        {
+            if(state == GLUT_UP)
+            {
+                n_x = n_x + v_x;
+                n_y = n_y + v_y;
+            }
+        }
+    }	
+void mover(int x, int y)
+    {
+        if(stado == 0)
+        {
+            stado = 1;
+            rx = x;
+            ry = y;
+        }
+        v_x = x - rx;
+        v_y = y - ry;
+        glutPostRedisplay();
+    }
+void nomover(int x, int y)
+    {
+        e_x = x;
+        e_y = y;
+        stado = 0;
+        v_x = 0;
+        v_y = 0;
+    }
 // Main del programa.
 int main(int argc, char **argv)
 {
@@ -168,6 +202,9 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
+    glutMouseFunc(mouse);
+    glutPassiveMotionFunc(nomover);
+    glutMotionFunc(mover);
     glutKeyboardFunc(keyboard);
     glutMainLoop();
 
