@@ -67,111 +67,6 @@ void display(void)
 }
 
 // Termina la ejecucion del programa cuando se presiona ESC
-void keyboard(unsigned char key, int x, int y)
-{
-    switch (key)
-    {
-    case 'B':
-    case 'b':
-    mat_ambient[0] = 0.329412f;
-    mat_ambient[1] =0.223529f;
-    mat_ambient[2] =0.027451f,1.0f ;
-    mat_diffuse[0] =  0.780392f ;
-    mat_diffuse[1] = 0.568627f;
-    mat_diffuse[2] = 0.113725f, 1.0f ;
-    mat_specular[0] =  0.992157f;
-    mat_specular[1] = 0.941176f;
-    mat_specular[2] = 0.807843f, 1.0f ;
-    shine[0] = 27.8f;
-    break;
-    case 'G':
-    case 'g':
-    mat_ambient[0] = 0.24725;
-    mat_ambient[1] =0.1995;
-    mat_ambient[2] =0.0745,1.0f ;
-    mat_diffuse[0] = 0.75164;
-    mat_diffuse[1] = 0.60648;
-    mat_diffuse[2] = 0.22648, 1.0f ;
-    mat_specular[0] =0.628281;
-    mat_specular[1] = 0.555802;
-    mat_specular[2] = 0.366065, 1.0f ;
-    shine[0] = 20.0f;
-	break;
-    case 'C':
-    case 'c':
-    mat_ambient[0] = 0.19125;
-    mat_ambient[1] =0.0735;
-    mat_ambient[2] =0.0225,1.0f ;
-    mat_diffuse[0] =0.7038;
-    mat_diffuse[1] =0.27048;
-    mat_diffuse[2] =0.0828, 1.0f ;
-    mat_specular[0] =0.256777;
-    mat_specular[1] =0.137622;
-    mat_specular[2] =0.086014, 1.0f ;
-    shine[0] = 15.0f;
-	break;
-    case 'R':
-    case 'r':
-    mat_ambient[0] = 0.0;
-    mat_ambient[1] =0.0;
-    mat_ambient[2] =0.0,1.0f ;
-    mat_diffuse[0] =0.5;
-    mat_diffuse[1] =0.0;
-    mat_diffuse[2] =0.0, 1.0f ;
-    mat_specular[0] =0.7;
-    mat_specular[1] =0.6;
-    mat_specular[2] =0.6, 1.0f ;
-    shine[0] = 10.0f;
-	break;
-    case 'S':
-    case 's':
-    mat_ambient[0] = 0.19225;
-    mat_ambient[1] =0.19225;
-    mat_ambient[2] =0.19225,1.0f ;
-    mat_diffuse[0] =0.50754;
-    mat_diffuse[1] =0.50754;
-    mat_diffuse[2] =0.50754, 1.0f ;
-    mat_specular[0] =0.508273;
-    mat_specular[1] =0.508273;
-    mat_specular[2] =0.508273, 1.0f ;
-    shine[0] = 8.0f;
-	break;
-    }
-    glutPostRedisplay();
-}
-void mouse(int button, int state, int x, int y)
-    {
-        int rx, ry;
-        if(button == 0)
-        {
-            if(state == GLUT_UP)
-            {
-                n_x = n_x + v_x;
-                n_y = n_y + v_y;
-            }
-        }
-    }	
-void mover(int x, int y)
-    {
-        if(stado == 0)
-        {
-            stado = 1;
-            rx = x;
-            ry = y;
-        }
-        v_x = x - rx;
-        v_y = y - ry;
-        glutPostRedisplay();
-    }
-void nomover(int x, int y)
-    {
-        e_x = x;
-        e_y = y;
-        stado = 0;
-        v_x = 0;
-        v_y = 0;
-    }
-// Main del programa.
 int main(int argc, char **argv)
 {
 // Inicializo OpenGL
@@ -197,10 +92,6 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    glutMouseFunc(mouse);
-    glutPassiveMotionFunc(nomover);
-    glutMotionFunc(mover);
-    glutKeyboardFunc(keyboard);
     glutMainLoop();
 
     return 0;
